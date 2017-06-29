@@ -6,7 +6,9 @@ const cookieParser = require('cookie-parser');
 const bodyParser   = require('body-parser');
 const layouts      = require('express-ejs-layouts');
 const mongoose     = require('mongoose');
-
+const session      = require('express-session');
+//The passport middlewares have to go after the session middleware
+const passport     = require('passport');
 
 mongoose.connect('mongodb://localhost/express-users');
 
@@ -27,6 +29,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(layouts);
+// express-session, the value of 'secret' doesn't matter except
+// it has to be different for every app.
+app.use(session({
+  secret: 'sjhjahsjka',
+  resave: true,
+  saveUninitialized: true
+})); //Parentheses: 1 for app.use and another for 'session()'
+
+//---------PASSPORT MIDDLEWARES-------------------
+
+app.use(passport.initialize());
+app.use(passport.session());
+//These need to come after app.use(session(...)) since
+//session() is used here.
+
+//------------------------------------------------
 
 //---------------ROUTES---------------------------
 
