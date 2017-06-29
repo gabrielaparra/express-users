@@ -2,6 +2,12 @@
 
 <p> Sign up for this awesome app. </p>
 
+<!-- we use typeof here to avoid an error since the variable
+sometimes doesn't exist -->
+<% if (typeof messageForDumbUsers === 'string') { %>
+  <p class="error-message"> <%= messageForDumbUsers %> </p>
+<% } %>
+
 <form id="form" action="/signup" method="post">
   <label for="full-name"> Full Name: </label>
   <input id="full-name" type="text" name="signupFullName"

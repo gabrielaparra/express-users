@@ -49,3 +49,12 @@ a {
   color: #43a3e6;
   transition: .3s ease background;
 }
+
+.error-message {
+  margin: 0 auto;
+  width: 380px;
+  color: #f02b63;
+  border: 1px solid #f02b63;
+  border-radius: 3px;
+  padding: 10px;
+}

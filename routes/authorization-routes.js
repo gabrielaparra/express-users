@@ -18,6 +18,12 @@ router.post('/signup', (req, res, next) => {
   UserModel.findOne(
     { username: req.body.signupUsername },
     (err, userFromDb) => {
+      //if there's an error retrieving the information from the DB
+      if (err){
+        next(err);
+        return;
+      }
+
       //if a match was found (the username is taken)
       if (userFromDb) {
         res.locals.messageForDumbUsers = 'Sorry, that username is taken.';
