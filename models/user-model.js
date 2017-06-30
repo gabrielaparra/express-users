@@ -4,8 +4,13 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema (
   {
     fullName: { type: String },
+    // SIGN UP/ LOG IN form users
     username: { type: String },
-    encryptedPassword: { type: String}
+    encryptedPassword: { type: String},
+    // GOOGLE users
+    googleId: { type: String },
+    // FACEBOOK users
+    facebookId: { type: String }
   },
   { //2nd arg OPTIONAL -> additional settings
     timestamps: true

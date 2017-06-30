@@ -33,8 +33,7 @@ passport.deserializeUser((idFromBowl, next) => {
   );
 });
 
-//---------------STRATEGIES------------------------------
-//Strategies: different ways of signing in
+//---------------LOCAL STRATEGY-------------------------
 
 const LocalStrategy = require('passport-local').Strategy;
 //Setup passport-local
@@ -76,5 +75,125 @@ passport.use(new LocalStrategy(
     );
   }
 ));
+//-------------------------------------------------------
 
+//----------------FACEBOOK STRATEGY----------------------
+const FbStrategy = require('passport-facebook').Strategy;
+//Setup passport-facebook
+
+passport.use(new FbStrategy (
+  {
+    //1st arg -> settings object
+    clientID: '??????',
+    clientSecret: '????????',
+    callbackURL: '/auth/facebook/callback'
+          //Our route (name this whatever you want)
+  },
+  (accessToken, refreshToken, profile, next) => {
+    //2nd arg -> callback
+    //called when a user allows us to log them in with Facebook
+    console.log('Hi!');
+    console.log('------FACEBOOK PROFILE INFO------');
+    console.log(profile);
+    console.log('');
+
+    UserModel.findOne(
+      { facebookId: profile.id},
+      (err, userFromDb) => {
+        if (err) {
+          next(err);
+          return;
+        }
+        //if it's the first time the user logs in with Facebook
+        //userFromDb will be empty
+        if (userFromDb) {
+          //check if they have logged in before
+          next(null, userFromDb);
+          //log them in
+        }
+        //If it's the first time, save them in the DB
+        const theUser = new UserModel ({
+          fullName: profile.displayNAme,
+          facebookId: profile.id
+        });
+
+        theUser.save((err) => {
+          if (err) {
+            next(err);
+            return;
+          }
+          //log the user in
+          next(null, theUser);
+        });
+      }
+    );
+    //Receiving the user info and saving it
+
+    //UNLESS we have already saved their info
+    //in that case we log them in
+  }
+));
+//-------------------------------------------------------
+
+//-------------------GOOGLE STRATEGY---------------------
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+
+passport.use(new GoogleStrategy (
+  {
+    //1st arg -> settings object
+    clientID: '???????????',
+    clientSecret: '??????????',
+    callbackURL: '/auth/google/callback'
+          //Our route (name this whatever you want)
+  },
+  (accessToken, refreshToken, profile, next) => {
+    //2nd arg -> callback
+    //called when a user allows us to log them in with Facebook
+    console.log('Hi!');
+    console.log('------GOOGLE PROFILE INFO------');
+    console.log(profile);
+    console.log('');
+
+    UserModel.findOne(
+      { googleId: profile.id},
+      (err, userFromDb) => {
+        if (err) {
+          next(err);
+          return;
+        }
+        //if it's the first time the user logs in with Google
+        //userFromDb will be empty
+        if (userFromDb) {
+          //check if they have logged in before
+          next(null, userFromDb);
+          //log them in
+        }
+        //If it's the first time, save them in the DB
+        const theUser = new UserModel ({
+          fullName: profile.displayNAme,
+          googleId: profile.id
+        });
+
+        //if the user doesn't have his google+ profile setup with
+        //his name, then we use his email account
+        if (theUser.fullName === undefined) {
+          theUser.fullName = profile.emails[0].value;
+        }
+
+        theUser.save((err) => {
+          if (err) {
+            next(err);
+            return;
+          }
+          //log the user in
+          next(null, theUser);
+        });
+      }
+    );
+    //Receiving the user info and saving it
+
+    //UNLESS we have already saved their info
+    //in that case we log them in
+  }
+));
 //-------------------------------------------------------

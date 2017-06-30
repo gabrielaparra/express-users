@@ -1,0 +1,17 @@
+<h2> My Rooms </h2>
+
+<ul>
+  <% roomsAndStuff.forEach((room) => { %>
+    <li>
+      <h3> <%= room.name %> </h3>
+      <img src="<%= room.photoUrl %>" alt="Room Photo">
+      <p> Owner: <i> <%= room.owner %> </i></p>
+
+      <% if (room.hasGhosts) { %>
+        <p> Ghost friendly </p>
+      <% } else { %>
+        <p> Ghost FREE </p>
+      <% } %>
+    </li>
+  <% }) %>
+</ul>

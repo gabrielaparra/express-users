@@ -74,6 +74,9 @@ app.use('/', index);
 const authorizationRoutes = require('./routes/authorization-routes.js');
 app.use('/', authorizationRoutes);
 
+const roomRoutes = require('./routes/room-routes.js');
+app.use('/', roomRoutes);
+
 //------------------------------------------------
 
 // catch 404 and forward to error handler

@@ -63,7 +63,11 @@ router.post('/signup', (req, res, next) => {
 //-------------------LOG IN------------------------
 //1st step: displaying login form
 router.get('/login', (req, res, next) => {
-  res.render('authorization-views/login-view.ejs');
+  if (req.user) {
+    res.redirect('/');
+  } else {
+    res.render('authorization-views/login-view.ejs');
+  }
 });
 
 //2nd step: authentication
@@ -79,6 +83,45 @@ router.post('/login', passport.authenticate(
 ));
 //------------------END LOG IN----------------------
 
+//----------------SOCIAL LOG INS--------------------
+
+//FACEBOOK
+            //determined by the strategy's npm package
+router.get('/auth/facebook', passport.authenticate('facebook'));
+router.get('/auth/facebook/callback',
+  passport.authenticate(
+    'facebook',
+    {
+      successRedirect: '/special',
+      failureRedirect: '/login'
+    }
+  )
+);
+
+//GOOGLE
+            //determined by the strategy's npm package
+router.get('/auth/google',
+  passport.authenticate(
+    'google',
+     {
+       scope: [
+         'https://www.googleapis.com/auth/plus.login',
+         'https://www.googleapis.com/auth/plus.profile.emails.read'
+       ]
+     }
+   )
+ );
+
+  router.get('/auth/google/callback',
+    passport.authenticate(
+      'google',
+      {
+        successRedirect: '/special',
+        failureRedirect: '/login'
+      }
+    ));
+
+//--------------------------------------------------
 
 //-------------------LOG OUT-------------------------
 router.get('/logout', (req, res, next) => {
