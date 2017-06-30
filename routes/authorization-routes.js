@@ -1,12 +1,16 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const UserModel = require('../models/user-model.js');
+const passport = require('passport');
 const router = express.Router();
 
+//--------------------REGISTRATION--------------------------
+//STEP 1 of signup: displaying the signup form
 router.get('/signup', (req, res, next) => {
   res.render('authorization-views/signup-view.ejs');
 });
 
+//STEP 2 of signup: processing the information submitted in the signup form
 router.post('/signup', (req, res, next) => {
   if (req.body.signupUsername === '' || req.body.signupPassword === '') {
     res.locals.messageForDumbUsers = 'Please provide both username and password.';
@@ -53,6 +57,35 @@ router.post('/signup', (req, res, next) => {
       });
     }
   );
+});//--------------END REGISTRATION---------------
+
+
+//-------------------LOG IN------------------------
+//1st step: displaying login form
+router.get('/login', (req, res, next) => {
+  res.render('authorization-views/login-view.ejs');
 });
+
+//2nd step: authentication
+router.post('/login', passport.authenticate(
+  'local',
+  //1st arg -> name of the strategy used to log in
+  {
+    successRedirect: '/',
+    failureRedirect: '/login'
+    //Redirect accordingly (if login is successful or fails)
+  }
+  //2nd arg -> settings object
+));
+//------------------END LOG IN----------------------
+
+
+//-------------------LOG OUT-------------------------
+router.get('/logout', (req, res, next) => {
+  req.logout();
+  //the req.logout() function is defined by the passport middleware in app.js
+  res.redirect('/');
+});
+//---------------------------------------------------
 
 module.exports = router;

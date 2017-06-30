@@ -49,6 +49,23 @@ app.use(passport.session());
 
 //------------------------------------------------
 
+//---------------CURRENT USER---------------------
+//This middleware creates the 'currentUser' for ALL views
+//if the user is logged in
+
+app.use((req, res, next) => {
+  //'req.user' is defined by the passport middleware
+  //if the user is logged in, 'req.user' will be empty
+  if (req.user) {
+    // Create the 'currentUser' local var for all views
+    res.locals.currentUser = req.user;
+  }
+  next();
+  //if we don't do 'load' the pages will load forever
+});
+
+//------------------------------------------------
+
 //---------------ROUTES---------------------------
 
 const index = require('./routes/index');
